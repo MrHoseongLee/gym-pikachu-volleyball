@@ -20,9 +20,11 @@ INFINITE_LOOP_LIMIT: int = 1000
 class PikachuVolleyballEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, isPlayer1Computer: bool, isPlayer2Computer: bool):
+    def __init__(self, isPlayer1Computer: bool, isPlayer2Computer: bool, ball_random: bool = True):
         self.observation_space = spaces.Box(low=-1, high=1, shape=(24,))
         self.action_space = spaces.MultiDiscrete([3, 3, 2, 3, 3, 2])
+
+        self.ball_random = ball_random
 
         self.player1 = Player(False, isPlayer1Computer)
         self.player2 = Player(True, isPlayer2Computer)
@@ -30,7 +32,7 @@ class PikachuVolleyballEnv(gym.Env):
 
         self.viewer = None
 
-    def step(self, player1_action, player2_action):
+    def step(self, player1_action: Tuple[int, int, int], player2_action: Tuple[int, int, int]):
         action = (UserInput(*player1_action), UserInput(*player2_action))
         isBallTouchingGround = physicsEngine(self.player1, self.player2, self.ball, action)
 
@@ -58,14 +60,16 @@ class PikachuVolleyballEnv(gym.Env):
         self.player1.initializeForNewRound()
         self.player2.initializeForNewRound()
 
-        self.ball.initializeForNewRound(True)
+        self.ball.initializeForNewRound(not self.ball_random or pr.randrange(0, 2) == 0)
 
         return (self.ball.x, self.ball.y, self.ball.xVelocity, self.ball.yVelocity, 
                        self.player1.x, self.player1.y, self.player1.xVelocity, self.player1.yVelocity,
                        self.player2.x, self.player2.y, self.player2.xVelocity, self.player2.yVelocity)
 
     def close(self):
-        self.viewer.close()
+        if self.viewer is not None:
+            self.viewer.close()
+            self.viewer = None
 
 class CopyBall:
     __slots__ = ['x', 'y', 'xVelocity', 'yVelocity']
