@@ -40,7 +40,7 @@ class PikachuVolleyballEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self, isPlayer1Computer: bool, isPlayer2Computer: bool, ball_random: bool = True):
-        self.observation_space = spaces.Box(low=-1, high=1, shape=(24,))
+        self.observation_space = spaces.Box(shape=(12,))
         self.action_space = spaces.MultiDiscrete([18, 18])
 
         self.ball_random = ball_random
