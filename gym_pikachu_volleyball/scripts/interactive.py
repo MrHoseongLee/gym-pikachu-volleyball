@@ -50,13 +50,13 @@ def getInput():
     else:
         enter_down = False
 
-    return action
+    return (action[0] + 1) * 6 + (action[1] + 1) + action[2] * 3
 
 for _ in range(10000):
     curTime = time()
     env.render()
 
-    observation, reward, done, _ = env.step((0, 0, 0), getInput())
+    observation, reward, done, _ = env.step((0, getInput()))
 
     if done:
         break

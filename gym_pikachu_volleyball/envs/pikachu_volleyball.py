@@ -17,12 +17,31 @@ NET_PILLAR_TOP_TOP_Y_COORD: int = 176
 NET_PILLAR_TOP_BOTTOM_Y_COORD: int = 192
 INFINITE_LOOP_LIMIT: int = 1000
 
+action_converter = ((-1, -1,  0),
+                    (-1,  0,  0),
+                    (-1, +1,  0),
+                    (-1, -1, +1),
+                    (-1,  0, +1),
+                    (-1, +1, +1),
+                    ( 0, -1,  0),
+                    ( 0,  0,  0),
+                    ( 0, +1,  0),
+                    ( 0, -1, +1),
+                    ( 0,  0, +1),
+                    ( 0, +1, +1),
+                    (+1, -1,  0),
+                    (+1,  0,  0),
+                    (+1, +1,  0),
+                    (+1, -1, +1),
+                    (+1,  0, +1),
+                    (+1, +1, +1))
+
 class PikachuVolleyballEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self, isPlayer1Computer: bool, isPlayer2Computer: bool, ball_random: bool = True):
         self.observation_space = spaces.Box(low=-1, high=1, shape=(24,))
-        self.action_space = spaces.MultiDiscrete([3, 3, 2, 3, 3, 2])
+        self.action_space = spaces.MultiDiscrete([18, 18])
 
         self.ball_random = ball_random
 
@@ -32,8 +51,8 @@ class PikachuVolleyballEnv(gym.Env):
 
         self.viewer = None
 
-    def step(self, player1_action: Tuple[int, int, int], player2_action: Tuple[int, int, int]):
-        action = (UserInput(*player1_action), UserInput(*player2_action))
+    def step(self, action=Tuple[int, int]):
+        action = (UserInput(*action_converter[action[0]]), UserInput(*action_converter[action[1]]))
         isBallTouchingGround = physicsEngine(self.player1, self.player2, self.ball, action)
 
         observation = (self.ball.x, self.ball.y, self.ball.xVelocity, self.ball.yVelocity, 
