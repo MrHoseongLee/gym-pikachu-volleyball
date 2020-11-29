@@ -40,7 +40,6 @@ class PikachuVolleyballEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self, isPlayer1Computer: bool, isPlayer2Computer: bool, ball_random: bool = True):
-        self.observation_space = spaces.Box(shape=(12,))
         self.action_space = spaces.MultiDiscrete([18, 18])
 
         self.ball_random = ball_random
@@ -55,9 +54,9 @@ class PikachuVolleyballEnv(gym.Env):
         action = (UserInput(*action_converter[action[0]]), UserInput(*action_converter[action[1]]))
         isBallTouchingGround = physicsEngine(self.player1, self.player2, self.ball, action)
 
-        observation = (self.ball.x, self.ball.y, self.ball.xVelocity, self.ball.yVelocity, 
-                       self.player1.x, self.player1.y, self.player1.xVelocity, self.player1.yVelocity,
-                       self.player2.x, self.player2.y, self.player2.xVelocity, self.player2.yVelocity)
+        observation = (self.ball.x - GROUND_HALF_WIDTH, self.ball.y, self.ball.xVelocity, self.ball.yVelocity, 
+                       self.player1.x - GROUND_HALF_WIDTH, self.player1.y, self.player1.xVelocity, self.player1.yVelocity,
+                       self.player2.x - GROUND_HALF_WIDTH, self.player2.y, self.player2.xVelocity, self.player2.yVelocity)
         
         if isBallTouchingGround:
             if self.ball.punchEffectX < GROUND_HALF_WIDTH:
