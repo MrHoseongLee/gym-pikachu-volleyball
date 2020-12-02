@@ -7,7 +7,7 @@ def get_window(width, height, display: pyglet.canvas.Display, **kwargs):
     config = screen[0].get_best_config()
     context = config.create_context(None)
     
-    return pyglet.window.Window(width=width, height=height, display=display, config=config, context=context, **kwargs)
+    return pyglet.window.Window(width=width, height=height, display=display, caption='Pikachu Volleyball', config=config, context=context, **kwargs)
 
 def getFrameNumberForPlyaerAnimatedSprite(state, frameNumber):
     if state < 4:

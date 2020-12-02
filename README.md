@@ -41,7 +41,7 @@ The episode ends when the ball hits the ground.
 By running 
 
 ```bash
-python3 -m gym_pikachu_volleyball.scripts.interactive.py
+python3 -m gym_pikachu_volleyball.scripts.interactive
 ```
 
 You can play against the default AI. The game will end when a point is scored.
