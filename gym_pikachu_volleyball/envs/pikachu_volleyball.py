@@ -89,6 +89,10 @@ class PikachuVolleyballEnv(gym.Env):
             self.viewer.close()
             self.viewer = None
 
+    def seed(self, seed):
+        pr.seed(seed)
+        np.random.seed(seed)
+
 class CopyBall:
     __slots__ = ['x', 'y', 'xVelocity', 'yVelocity']
     def __init__(self, x, y, xVelocity, yVelocity):
