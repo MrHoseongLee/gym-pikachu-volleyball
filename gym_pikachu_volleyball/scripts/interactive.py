@@ -1,9 +1,13 @@
 import gym
 import pyglet
+import argparse
+import random as pr
 from time import time, sleep
 from pyglet.window import key as keycodes
 
 env = gym.make('gym_pikachu_volleyball:pikachu-volleyball-v0', isPlayer1Computer=True, isPlayer2Computer=False)
+seed = pr.randint(0, int(1e8))
+env.seed(seed)
 env.reset()
 env.render()
 key_handler = pyglet.window.key.KeyStateHandler()
@@ -52,14 +56,32 @@ def getInput():
 
     return (action[0] + 1) * 6 + (action[1] + 1) + action[2] * 3
 
-for _ in range(10000):
+def store_actions(actions):
+    with open('actions.txt', 'a') as f:
+        f.write(f'{seed},')
+        for action in actions:
+            f.write(f'{chr(65 + action)}')
+        f.write('\n')
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--record', action='store_true')
+args = parser.parse_args()
+
+actions = []
+
+while True:
     curTime = time()
     env.render()
 
-    observation, reward, done, _ = env.step((0, getInput()))
+    action = getInput()
+    observation, reward, done, _ = env.step((0, action))
+    actions.append(action)
 
     if done:
-        break
+        if args.record and reward == 1: store_actions(actions)
+        seed = pr.randint(0, int(1e8))
+        env.seed(seed)
+        env.reset()
 
     sleepTime = 1 / 30 - (time() - curTime)
     if sleepTime > 0:

@@ -46,8 +46,12 @@ python3 -m gym_pikachu_volleyball.scripts.interactive
 
 You can play against the default AI. The game will end when a point is scored.
 
+To record your game play, add `--record` to the above command and you will get a file with
+all the actions you did and the seed for the game. 
+
 ## TODO<a name="TODO"></a>
 - [ ] Add clouds and waves
-- [ ] Add recording function
+- [x] Add recording function
+- [ ] Add playback function
 - [ ] Add image observation
 - [ ] Solve legal problems regrading Copyright, License, Publishing to PyPI
