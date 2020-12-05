@@ -82,6 +82,7 @@ while True:
         seed = pr.randint(0, int(1e8))
         env.seed(seed)
         env.reset()
+        actions = []
 
     sleepTime = 1 / 30 - (time() - curTime)
     if sleepTime > 0:

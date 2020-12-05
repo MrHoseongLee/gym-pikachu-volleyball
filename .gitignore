@@ -4,5 +4,7 @@ gym_pikachu_volleyball/envs/sprites/temp.js
 gym_pikachu_volleyball/envs/sprites/index.html
 gym_pikachu_volleyball/envs/sprites/sprite_sheet.png
 gym_pikachu_volleyball/envs/sprites/sprite_sheet.json
+**.avi
+**.txt
 venv
 **/__pycache__
