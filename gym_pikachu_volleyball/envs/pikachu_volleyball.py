@@ -17,32 +17,52 @@ NET_PILLAR_TOP_TOP_Y_COORD: int = 176
 NET_PILLAR_TOP_BOTTOM_Y_COORD: int = 192
 INFINITE_LOOP_LIMIT: int = 1000
 
-action_converter = ((-1, -1,  0),
-                    (-1,  0,  0),
-                    (-1, +1,  0),
-                    (-1, -1, +1),
-                    (-1,  0, +1),
-                    (-1, +1, +1),
-                    ( 0, -1,  0),
-                    ( 0,  0,  0),
-                    ( 0, +1,  0),
-                    ( 0, -1, +1),
-                    ( 0,  0, +1),
-                    ( 0, +1, +1),
-                    (+1, -1,  0),
-                    (+1,  0,  0),
-                    (+1, +1,  0),
-                    (+1, -1, +1),
-                    (+1,  0, +1),
-                    (+1, +1, +1))
+action_converter_p1 = ((+1, -1,  0),
+                       (+1,  0,  0),
+                       (+1, +1,  0),
+                       (+1, -1, +1),
+                       (+1,  0, +1),
+                       (+1, +1, +1),
+                       ( 0, -1,  0),
+                       ( 0,  0,  0),
+                       ( 0, +1,  0),
+                       ( 0, -1, +1),
+                       ( 0,  0, +1),
+                       ( 0, +1, +1),
+                       (-1, -1,  0),
+                       (-1,  0,  0),
+                       (-1, +1,  0),
+                       (-1, -1, +1),
+                       (-1,  0, +1),
+                       (-1, +1, +1))
+
+action_converter_p2 = ((-1, -1,  0),
+                       (-1,  0,  0),
+                       (-1, +1,  0),
+                       (-1, -1, +1),
+                       (-1,  0, +1),
+                       (-1, +1, +1),
+                       ( 0, -1,  0),
+                       ( 0,  0,  0),
+                       ( 0, +1,  0),
+                       ( 0, -1, +1),
+                       ( 0,  0, +1),
+                       ( 0, +1, +1),
+                       (+1, -1,  0),
+                       (+1,  0,  0),
+                       (+1, +1,  0),
+                       (+1, -1, +1),
+                       (+1,  0, +1),
+                       (+1, +1, +1))
 
 class PikachuVolleyballEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, isPlayer1Computer: bool, isPlayer2Computer: bool, ball_random: bool = True):
+    def __init__(self, isPlayer1Computer: bool, isPlayer2Computer: bool, ball_random: bool = True, random_reset: bool = False):
         self.action_space = spaces.MultiDiscrete([18, 18])
 
         self.ball_random = ball_random
+        self.random_reset = random_reset
 
         self.player1 = Player(False, isPlayer1Computer)
         self.player2 = Player(True, isPlayer2Computer)
@@ -51,12 +71,24 @@ class PikachuVolleyballEnv(gym.Env):
         self.viewer = None
 
     def step(self, action=Tuple[int, int]):
-        action = (UserInput(*action_converter[action[0]]), UserInput(*action_converter[action[1]]))
+        action = (UserInput(*action_converter_p1[action[0]]), UserInput(*action_converter_p2[action[1]]))
         isBallTouchingGround = physicsEngine(self.player1, self.player2, self.ball, action)
 
-        observation = (self.ball.x - GROUND_HALF_WIDTH, self.ball.y, self.ball.xVelocity, self.ball.yVelocity, 
-                       self.player1.x - GROUND_HALF_WIDTH, self.player1.y, self.player1.xVelocity, self.player1.yVelocity,
-                       self.player2.x - GROUND_HALF_WIDTH, self.player2.y, self.player2.xVelocity, self.player2.yVelocity)
+        observation_p1 = ((self.ball.x - GROUND_HALF_WIDTH) / GROUND_HALF_WIDTH, self.ball.y / 304,
+                          (self.ball.xVelocity) / 20, self.ball.yVelocity / 36, 
+                          (self.player1.x - GROUND_HALF_WIDTH) / GROUND_HALF_WIDTH, self.player1.y / 304,
+                          (self.player1.xVelocity) / 6, self.player1.yVelocity / 16,
+                          (self.player2.x - GROUND_HALF_WIDTH) / GROUND_HALF_WIDTH, self.player2.y / 304,
+                          (self.player2.xVelocity) / 6, self.player2.yVelocity / 16)
+
+        observation_p2 = (-(self.ball.x - GROUND_HALF_WIDTH) / GROUND_HALF_WIDTH, self.ball.y / 304,
+                          -(self.ball.xVelocity) / 20, self.ball.yVelocity / 36, 
+                          -(self.player2.x - GROUND_HALF_WIDTH) / GROUND_HALF_WIDTH, self.player2.y / 304,
+                          -(self.player2.xVelocity) / 6, self.player2.yVelocity / 16,
+                          -(self.player1.x - GROUND_HALF_WIDTH) / GROUND_HALF_WIDTH, self.player1.y / 304,
+                          -(self.player1.xVelocity) / 6, self.player1.yVelocity / 16)
+        
+        observation = (observation_p1, observation_p2)
         
         if isBallTouchingGround:
             if self.ball.punchEffectX < GROUND_HALF_WIDTH:
@@ -80,10 +112,28 @@ class PikachuVolleyballEnv(gym.Env):
 
         self.ball.initializeForNewRound(not self.ball_random or pr.randrange(0, 2) == 0)
 
-        return (self.ball.x, self.ball.y, self.ball.xVelocity, self.ball.yVelocity, 
-                       self.player1.x, self.player1.y, self.player1.xVelocity, self.player1.yVelocity,
-                       self.player2.x, self.player2.y, self.player2.xVelocity, self.player2.yVelocity)
+        if self.random_reset:
+            self.ball.x = pr.randrange(BALL_RADIUS * 2, GROUND_WIDTH - BALL_RADIUS * 2)
+            self.ball.xVelocity = pr.randrange(-20, 21)
 
+        observation_p1 = ((self.ball.x - GROUND_HALF_WIDTH) / GROUND_HALF_WIDTH, self.ball.y / 304,
+                          (self.ball.xVelocity) / 20, self.ball.yVelocity / 36, 
+                          (self.player1.x - GROUND_HALF_WIDTH) / GROUND_HALF_WIDTH, self.player1.y / 304,
+                          (self.player1.xVelocity) / 6, self.player1.yVelocity / 16,
+                          (self.player2.x - GROUND_HALF_WIDTH) / GROUND_HALF_WIDTH, self.player2.y / 304,
+                          (self.player2.xVelocity) / 6, self.player2.yVelocity / 16)
+
+        observation_p2 = (-(self.ball.x - GROUND_HALF_WIDTH) / GROUND_HALF_WIDTH, self.ball.y / 304,
+                          -(self.ball.xVelocity) / 20, self.ball.yVelocity / 36, 
+                          -(self.player2.x - GROUND_HALF_WIDTH) / GROUND_HALF_WIDTH, self.player2.y / 304,
+                          -(self.player2.xVelocity) / 6, self.player2.yVelocity / 16,
+                          -(self.player1.x - GROUND_HALF_WIDTH) / GROUND_HALF_WIDTH, self.player1.y / 304,
+                          -(self.player1.xVelocity) / 6, self.player1.yVelocity / 16)
+        
+        observation = (observation_p1, observation_p2)
+
+        return observation
+        
     def close(self):
         if self.viewer is not None:
             self.viewer.close()

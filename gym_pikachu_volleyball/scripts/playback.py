@@ -17,7 +17,7 @@ with open('actions.txt', 'r') as f:
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
     out = cv2.VideoWriter(args.path,fourcc, 30.0, (1728,1216))
 
-    seed, actions = line.split(',')
+    seed, actions, _ = line.split(',')
     actions = actions.strip('\n')
 
     env.seed(int(seed))
