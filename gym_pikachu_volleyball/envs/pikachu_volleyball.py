@@ -3,7 +3,8 @@ from gym import spaces
 import numpy as np
 import random as pr
 from typing import Tuple
-from gym_pikachu_volleyball.envs.viewer import Viewer
+
+from time import time, sleep
 
 GROUND_WIDTH: int = 432
 GROUND_HALF_WIDTH: int = GROUND_WIDTH // 2
@@ -58,11 +59,8 @@ action_converter_p2 = ((-1, -1,  0),
 class PikachuVolleyballEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, isPlayer1Computer: bool, isPlayer2Computer: bool, ball_random: bool = True, random_reset: bool = False):
+    def __init__(self, isPlayer1Computer: bool, isPlayer2Computer: bool):
         self.action_space = spaces.MultiDiscrete([18, 18])
-
-        self.ball_random = ball_random
-        self.random_reset = random_reset
 
         self.player1 = Player(False, isPlayer1Computer)
         self.player2 = Player(True, isPlayer2Computer)
@@ -100,21 +98,29 @@ class PikachuVolleyballEnv(gym.Env):
     
     def render(self):
         if self.viewer is None:
+            from gym_pikachu_volleyball.envs.viewer import Viewer
             self.viewer = Viewer(GROUND_WIDTH, 304, scale=4)
+            self.startTime = time()
 
         self.viewer.update(self.player1, self.player2, self.ball)
 
         self.viewer.render()
 
-    def reset(self):
+        diffTime = time() - self.startTime
+
+        if diffTime < 1 / 30:
+            sleep(1 / 30 - diffTime)
+
+        self.startTime = time()
+
+    def reset(self, isPlayer2Serve: bool = None):
         self.player1.initializeForNewRound()
         self.player2.initializeForNewRound()
 
-        self.ball.initializeForNewRound(not self.ball_random or pr.randrange(0, 2) == 0)
-
-        if self.random_reset:
-            self.ball.x = pr.randrange(BALL_RADIUS * 2, GROUND_WIDTH - BALL_RADIUS * 2)
-            self.ball.xVelocity = pr.randrange(-20, 21)
+        if isPlayer2Serve is None:
+            self.ball.initializeForNewRound(pr.randrange(0, 2) == 0)
+        else:
+            self.ball.initializeForNewRound(isPlayer2Serve)
 
         observation_p1 = ((self.ball.x - GROUND_HALF_WIDTH) / GROUND_HALF_WIDTH, self.ball.y / 304,
                           (self.ball.xVelocity) / 20, self.ball.yVelocity / 36, 

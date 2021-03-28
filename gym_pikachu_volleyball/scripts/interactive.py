@@ -2,7 +2,6 @@ import gym
 import pyglet
 import argparse
 import random as pr
-from time import time, sleep
 from pyglet.window import key as keycodes
 
 env = gym.make('gym_pikachu_volleyball:pikachu-volleyball-v0', isPlayer1Computer=True, isPlayer2Computer=False)
@@ -14,8 +13,6 @@ key_handler = pyglet.window.key.KeyStateHandler()
 env.viewer.window.push_handlers(key_handler)
 
 enter_down = False
-
-sleep(1)
 
 def getInput():
     global enter_down
@@ -70,7 +67,6 @@ args = parser.parse_args()
 actions = []
 
 while True:
-    curTime = time()
     env.render()
 
     action = getInput()
@@ -83,8 +79,4 @@ while True:
         env.seed(seed)
         env.reset()
         actions = []
-
-    sleepTime = 1 / 30 - (time() - curTime)
-    if sleepTime > 0:
-        sleep(sleepTime)
 

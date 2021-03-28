@@ -50,8 +50,5 @@ To record your game play, add `--record` to the above command and you will get a
 all the actions you did and the seed for the game. 
 
 ## TODO<a name="TODO"></a>
-- [ ] Add clouds and waves
 - [x] Add recording function
 - [x] Add playback function
-- [ ] Add image observation
-- [ ] Solve legal problems regrading Copyright, License, Publishing to PyPI
