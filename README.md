@@ -8,22 +8,15 @@ a [reversed-engineered JavaScript version](https://github.com/gorisanson/pikachu
 by [gorisanson](https://github.com/gorisanson) to python.
 
 ## Installation
-You need openai gym package to use this environment.
 ```bash
-pip install gym
-```
-Install the package. (Uploading to PyPI is WIP [TODO](#TODO))
-```bash
-git clone https://github.com/MrHoseongLee/gym-pikachu-volleyball.git
-cd gym-pikachu-volleyball
-pip install -e .
+pip install gym-pikachu-volleyball
 ```
 
 ## Environment
 
 ### Observation
 Currently the only way for an agent to observe the environment is by the position and velocity
-of the ball, player1, player2 represented in a tuple of size 12. [TODO](#TODO)
+of the ball, player1, player2 represented in a tuple of size 12.
 
 ### Action
 Actions are defined by 3 numbers (xDirection, yDirection, powerHit)
@@ -48,7 +41,3 @@ You can play against the default AI. The game will end when a point is scored.
 
 To record your game play, add `--record` to the above command and you will get a file with
 all the actions you did and the seed for the game. 
-
-## TODO<a name="TODO"></a>
-- [x] Add recording function
-- [x] Add playback function
