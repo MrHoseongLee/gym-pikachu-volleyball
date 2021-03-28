@@ -4,8 +4,8 @@ with open("README.md", "r") as readme_file:
     readme = readme_file.read()
 
 setup(name='gym_pikachu_volleyball',
-      version='0.0.1',
-      install_requirements=['gym'],
+      version='0.0.2',
+      install_requires=['gym'],
       author="Hoseong Lee",
       author_email="mr.hoseong.lee@gmail.com",
       description="An openai-gym wrapper for pikachu-volleyball",
