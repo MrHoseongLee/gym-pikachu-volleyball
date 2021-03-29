@@ -4,7 +4,7 @@ with open("README.md", "r") as readme_file:
     readme = readme_file.read()
 
 setup(name='gym_pikachu_volleyball',
-      version='0.0.2',
+      version='0.0.4',
       install_requires=['gym'],
       author="Hoseong Lee",
       author_email="mr.hoseong.lee@gmail.com",
@@ -13,7 +13,8 @@ setup(name='gym_pikachu_volleyball',
       long_description_content_type="text/markdown",
       url="https://github.com/MrHoseongLee/gym-pikachu-volleyball",
       packages=find_packages(),
-      package_data = {'sprites': ['envs/sprites/*']},
+      package_data = {'envs': ['sprites/*.png']},
+      include_package_data=True,
       zip_safe = False
 )
 
