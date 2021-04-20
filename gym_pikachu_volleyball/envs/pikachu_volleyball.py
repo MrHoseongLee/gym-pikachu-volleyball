@@ -236,8 +236,8 @@ def physicsEngine(player1: Player, player2: Player, ball: Ball, userInputArray: 
     return isBallTouchGround
 
 def isCollisionBetweenBallAndPlayerHappened(ball: Ball, playerX: int, playerY: int) -> bool:
-    return abs(ball.x - playerX) <= PLAYER_HALF_LENGTH and\
-           abs(ball.y - playerY) <= PLAYER_HALF_LENGTH
+    return abs(ball.x - playerX) < PLAYER_HALF_LENGTH and\
+           abs(ball.y - playerY) < PLAYER_HALF_LENGTH
 
 def processCollisionBetweenBallAndWorldAndSetBallPosition(ball: Ball) -> bool:
     ball.previousPreviousX = ball.previousX
