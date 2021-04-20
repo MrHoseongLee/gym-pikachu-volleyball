@@ -208,6 +208,9 @@ class Player:
 
         self.previousX = self.x
 
+        self.divingDirection: int = 0
+        self.lyingDownDurationLeft: int = -1
+
         self.state: int = 0
         self.frameNumber: int = 0
         self.normalStatusArmSwingDirection: int = 1
@@ -251,7 +254,7 @@ def processCollisionBetweenBallAndWorldAndSetBallPosition(ball: Ball) -> bool:
     futureBallX: int = ball.x + ball.xVelocity
     futureBallY: int = ball.y + ball.yVelocity
 
-    if futureBallX < BALL_RADIUS or futureBallX > GROUND_WIDTH:
+    if futureBallX < BALL_RADIUS or futureBallX > GROUND_WIDTH - BALL_RADIUS:
         ball.xVelocity = -ball.xVelocity
 
     if futureBallY < 0:

@@ -4,7 +4,7 @@ with open("README.md", "r") as readme_file:
     readme = readme_file.read()
 
 setup(name='gym_pikachu_volleyball',
-      version='0.0.5',
+      version='0.0.6',
       install_requires=['gym'],
       author="Hoseong Lee",
       author_email="mr.hoseong.lee@gmail.com",
