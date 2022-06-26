@@ -1,3 +1,7 @@
+# Warning
+
+This repo is deprecated. Future development will continue on [https://github.com/HoseongLee/gym-pikachu-volleyball](https://github.com/HoseongLee/gym-pikachu-volleyball). 
+
 # Pikachu Volleyball
 
 Pikachu Volleyball (対戦ぴかちゅ～　ﾋﾞｰﾁﾊﾞﾚｰ編) is an old Windows game which was developed by
